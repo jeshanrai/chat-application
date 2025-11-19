@@ -1,10 +1,35 @@
+// routes/chat.routes.js
 import express from "express";
-import { protect } from "../middleware/auth.js";
-import { getChatHistory, getStats } from "../controllers/chat.controller.js";
+import Message from "../models/Chat.js"; // make sure this is the correct model
 
 const router = express.Router();
 
-router.get("/history", protect, getChatHistory);
-router.get("/stats", protect, getStats);
+router.post("/", async (req, res) => {
+  try {
+    const { senderId, receiverId, text } = req.body;
+    const message = await Message.create({ senderId, receiverId, text });
+    res.status(201).json(message);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Failed to send message" });
+  }
+});
 
-export default router;
+// Get chat history between two users
+router.get("/:userId1/:userId2", async (req, res) => {
+  try {
+    const { userId1, userId2 } = req.params;
+    const messages = await Message.find({
+      $or: [
+        { senderId: userId1, receiverId: userId2 },
+        { senderId: userId2, receiverId: userId1 },
+      ],
+    }).sort({ createdAt: 1 }); // oldest first
+    res.json(messages);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Failed to fetch messages" });
+  }
+});
+
+export default router; // fix typo here

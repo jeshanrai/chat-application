@@ -38,7 +38,7 @@ const Sidebar = ({ onSelectUser }) => {
   );
 
   return (
-    <div className="w-72 h-[calc(100vh-71px)] bg-white border border-gray-300 p-4 flex flex-col rounded-lg overflow-hidden ml-2  mb-2">
+    <div className="w-72 h-[calc(100vh-71px)] mt-2 bg-white border border-gray-300 p-4 flex flex-col rounded-lg overflow-hidden ml-2  mb-2">
       {/* Search */}
       <input
         type="text"
@@ -60,7 +60,7 @@ const Sidebar = ({ onSelectUser }) => {
           filteredUsers.map(u => (
             <div
               key={u._id}
-              onClick={() => onSelectUser(u.username)} // ✅ send selected username to parent
+              onClick={() => onSelectUser(u)} // ✅ send selected username to parent
               className="flex items-center justify-between p-2 rounded-lg hover:bg-gray-100 cursor-pointer"
             >
               <div className="flex items-center gap-2">
