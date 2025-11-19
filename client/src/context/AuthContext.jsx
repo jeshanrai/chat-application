@@ -2,29 +2,23 @@ import { createContext, useState, useEffect } from "react";
 
 export const AuthContext = createContext();
 
-const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
-  const [token, setToken] = useState(null);
+export const AuthProvider = ({ children }) => {
+  const [user, setUser] = useState(() => {
+    const storedUser = localStorage.getItem("user");
+    return storedUser ? JSON.parse(storedUser) : null;
+  });
 
-  // Auto-login if token exists
-  useEffect(() => {
-    const savedUser = localStorage.getItem("user");
-    const savedToken = localStorage.getItem("token");
-    if (savedUser && savedToken) {
-      setUser(JSON.parse(savedUser));
-      setToken(savedToken);
-    }
-  }, []);
+  const [token, setToken] = useState(() => {
+    return localStorage.getItem("token") || null;
+  });
 
-  // Login: store user and token
-  const login = (userData, jwtToken) => {
+  const login = (userData, token) => {
     setUser(userData);
-    setToken(jwtToken);
+    setToken(token);
     localStorage.setItem("user", JSON.stringify(userData));
-    localStorage.setItem("token", jwtToken);
+    localStorage.setItem("token", token);
   };
 
-  // Logout: clear user and token
   const logout = () => {
     setUser(null);
     setToken(null);
@@ -38,5 +32,3 @@ const AuthProvider = ({ children }) => {
     </AuthContext.Provider>
   );
 };
-
-export default AuthProvider;

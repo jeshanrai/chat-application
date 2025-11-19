@@ -4,7 +4,7 @@ import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import ChatRoom from "./pages/ChatRoom";
-import AuthProvider from "./context/AuthContext";
+import { AuthProvider } from "./context/AuthContext";
 import SocketProvider from "./context/SocketContext";
 import ProtectedRoute from "./components/ProtectedRoute";
 import "./App.css";
@@ -28,19 +28,19 @@ function App() {
             />
 
             <Route
-              path="/chat"
+              path="/home"
               element={
                 <ProtectedRoute>
-                  <ChatRoom />
+                  <Home />
                 </ProtectedRoute>
               }
             />
 
             <Route
-              path="/home"
+              path="/chat"
               element={
                 <ProtectedRoute>
-                  <Home />
+                  <ChatRoom />
                 </ProtectedRoute>
               }
             />

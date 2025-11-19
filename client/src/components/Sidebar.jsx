@@ -1,20 +1,22 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "../hooks/useAuth";
+import { useSocket } from "../context/SocketContext";
 
 const Sidebar = ({ onSelectUser }) => {
   const { user, token } = useAuth();
+  const { onlineUsers } = useSocket();
   const [users, setUsers] = useState([]);
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(true);
 
+  // Fetch users initially
   useEffect(() => {
     const fetchUsers = async () => {
       setLoading(true);
       try {
-       const res = await fetch("http://localhost:5000/api/users", {
-  headers: { Authorization: `Bearer ${token}` },
-});
-
+        const res = await fetch("http://localhost:5000/api/users", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
 
         if (!res.ok) throw new Error("Failed to fetch users");
 
@@ -33,13 +35,22 @@ const Sidebar = ({ onSelectUser }) => {
     if (token) fetchUsers();
   }, [token, user]);
 
+  // Update online status automatically
+  useEffect(() => {
+    setUsers(prev =>
+      prev.map(u => ({
+        ...u,
+        online: onlineUsers.includes(u._id),
+      }))
+    );
+  }, [onlineUsers]);
+
   const filteredUsers = users.filter(u =>
     u.username.toLowerCase().includes(search.toLowerCase())
   );
 
   return (
-    <div className="w-72 h-[calc(100vh-71px)] mt-2 bg-white border border-gray-300 p-4 flex flex-col rounded-lg overflow-hidden ml-2  mb-2">
-      {/* Search */}
+    <div className="w-72 h-[calc(100vh-71px)] mt-2 bg-white border border-gray-300 p-4 flex flex-col rounded-lg overflow-hidden ml-2 mb-2">
       <input
         type="text"
         placeholder="Search by Username"
@@ -50,7 +61,6 @@ const Sidebar = ({ onSelectUser }) => {
 
       <h3 className="text-gray-700 font-semibold mb-2">Friends</h3>
 
-      {/* Friends List */}
       <div className="flex-1 overflow-y-auto pr-1">
         {loading ? (
           <div className="text-center text-gray-500 text-sm">Loading users...</div>
@@ -60,7 +70,7 @@ const Sidebar = ({ onSelectUser }) => {
           filteredUsers.map(u => (
             <div
               key={u._id}
-              onClick={() => onSelectUser(u)} // ✅ send selected username to parent
+              onClick={() => onSelectUser(u)}
               className="flex items-center justify-between p-2 rounded-lg hover:bg-gray-100 cursor-pointer"
             >
               <div className="flex items-center gap-2">

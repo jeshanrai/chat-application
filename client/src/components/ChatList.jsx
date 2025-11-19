@@ -1,15 +1,15 @@
-// src/components/ChatList.jsx
+
 import React, { useEffect, useRef } from "react";
 
 const ChatList = ({ selectedUser, messages = [], currentUser, onClose }) => {
   const messagesEndRef = useRef(null);
 
-  // Scroll to bottom whenever messages change
+
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  if (!selectedUser) return null; // Handle null user
+  if (!selectedUser) return null; 
 
   return (
     <div className="flex flex-col flex-1 h-full">
@@ -40,7 +40,8 @@ const ChatList = ({ selectedUser, messages = [], currentUser, onClose }) => {
           </div>
         ) : (
           messages.map((msg) => {
-            const isSender = msg.senderId === currentUser._id;
+           const isSender = msg.senderId.toString() === currentUser._id.toString();
+
             return (
               <div
                 key={msg._id || msg.timestamp}

@@ -13,41 +13,35 @@ const ChatRoom = () => {
   const [message, setMessage] = useState("");
   const messagesEndRef = useRef(null);
 
-  // Register current user on socket
+  // Register current user
   useEffect(() => {
     if (currentUser?._id) {
       socket.emit("addUser", currentUser._id);
-      console.log("✅ Current user registered on socket:", currentUser._id);
+      console.log("User registered:", currentUser._id);
     }
   }, [currentUser?._id]);
 
-  // Listen for incoming messages safely
+  // Receive messages from socket
   useEffect(() => {
     const handleMessage = (data) => {
-      console.log("📨 New message received:", data);
+      console.log("📥 Received message:", data);
 
-      // Safety checks
-      if (!data || !data.senderId || !data.receiverId || !selectedUser?._id) return;
+      if (!data?.senderId || !data?.receiverId) return;
 
-      const senderId = data.senderId.toString();
-      const receiverId = data.receiverId.toString();
-      const selectedId = selectedUser._id.toString();
-      const currentId = currentUser._id.toString();
+      const normalized = {
+        ...data,
+        senderId: data.senderId.toString(),
+        receiverId: data.receiverId.toString(),
+      };
 
-      // Only add if it belongs to current chat
-      if (
-        (senderId === currentId && receiverId === selectedId) ||
-        (receiverId === currentId && senderId === selectedId)
-      ) {
-        setMessages((prev) => [...prev, data]);
-      }
+      setMessages((prev) => [...prev, normalized]);
     };
 
     socket.on("getMessage", handleMessage);
     return () => socket.off("getMessage", handleMessage);
-  }, [selectedUser, currentUser?._id]);
+  }, []);
 
-  // Load chat history
+  // Load chat history when selection changes
   useEffect(() => {
     if (!selectedUser?._id) return;
 
@@ -56,19 +50,18 @@ const ChatRoom = () => {
         const response = await fetch(
           `http://localhost:5000/api/chat/${currentUser._id}/${selectedUser._id}`
         );
-        if (!response.ok) throw new Error("Failed to fetch chat");
 
         const data = await response.json();
-        const normalizedMessages = data.map((msg) => ({
+
+        const normalized = data.map((msg) => ({
           ...msg,
-          senderId: msg.senderId?.toString(),
-          receiverId: msg.receiverId?.toString(),
+          senderId: msg.senderId.toString(),
+          receiverId: msg.receiverId.toString(),
         }));
 
-        setMessages(normalizedMessages);
-        console.log("📂 Chat history loaded:", normalizedMessages);
+        setMessages(normalized);
       } catch (err) {
-        console.error("❌ Failed to load chat history:", err);
+        console.error("Failed to load history:", err);
       }
     };
 
@@ -92,30 +85,35 @@ const ChatRoom = () => {
     };
 
     socket.emit("sendMessage", newMessage);
-    console.log("📨 Message sent via socket:", newMessage);
 
     fetch("http://localhost:5000/api/chat", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(newMessage),
-    }).catch((err) => console.error("❌ Failed to save message:", err));
+    });
 
     setMessages((prev) => [...prev, newMessage]);
     setMessage("");
   };
 
-  const filteredMessages = messages.filter(
-    (msg) =>
-      msg.senderId?.toString() === currentUser._id.toString() &&
-      msg.receiverId?.toString() === selectedUser?._id.toString() ||
-      msg.senderId?.toString() === selectedUser?._id.toString() &&
-      msg.receiverId?.toString() === currentUser._id.toString()
+  const filteredMessages = messages.filter((msg) => {
+  const sender = msg.senderId.toString();
+  const receiver = msg.receiverId.toString();
+  const current = currentUser._id.toString();
+  const selected = selectedUser?._id?.toString();
+
+  return (
+    (sender === current && receiver === selected) ||
+    (sender === selected && receiver === current)
   );
+});
+
 
   return (
     <div className="flex flex-1 ml-2 mr-2 rounded-lg overflow-hidden">
       <Sidebar onSelectUser={setSelectedUser} />
-      <div className="flex flex-col flex-1 ml-2 mt-2 border border-gray-300 rounded-lg  h-[90.5vh] overflow-hidden">
+
+      <div className="flex flex-col flex-1 ml-2 mt-2 border border-gray-300 rounded-lg h-[90.5vh] overflow-hidden">
         {selectedUser ? (
           <>
             <div className="flex-1 overflow-y-auto">
@@ -127,6 +125,7 @@ const ChatRoom = () => {
                 onClose={() => setSelectedUser(null)}
               />
             </div>
+
             <ChatInput
               message={message}
               setMessage={setMessage}
