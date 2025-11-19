@@ -8,38 +8,35 @@ It includes:
 - Online/offline user status tracking
 - Real-time UI updates with React and Tailwind CSS
 
-//////////////////////////////////////////////////////////////////
-# Backend Setup & Start (with nodemon)
+## Backend Setup & Start (with nodemon)
 
-# 1. Go to backend folder
+### 1. Go to backend folder
 cd backend
 
-# 2. Install dependencies
+### 2. Install dependencies
 npm install
 
-# 3. Copy example env and edit values
+### 3. Copy example env and edit values
 cp .env.example .env
-#  Open .env and update MONGO_URI, JWT_SECRET, CLIENT_URL
+####  Open .env and update MONGO_URI, JWT_SECRET, CLIENT_URL
 
-# 4. Start server with nodemon
+### 4. Start server with nodemon
 npx nodemon src/index.js
 
-////////////////////////////////////////////////////////////////
-# Frontend Setup & Start (React)
+## Frontend Setup & Start (React)
 
-# 1. Go to frontend folder
+### 1. Go to frontend folder
 cd frontend
 
-# 2. Install dependencies
+### 2. Install dependencies
 npm install
 
-# 3. Copy example env and edit values
+### 3. Copy example env and edit values
 cp .env.example .env
-#  Open .env and update REACT_APP_BACKEND_URL
+####  Open .env and update REACT_APP_BACKEND_URL
 
-# 4. Start React development server
+### 4. Start React development server
 npm start
-////////////////////////////////////////////////////////
 
 
 ## Tech Stack
