@@ -1,6 +1,6 @@
-// routes/chat.routes.js
+
 import express from "express";
-import Message from "../models/Chat.js"; // make sure this is the correct model
+import Message from "../models/Chat.js"; 
 
 const router = express.Router();
 
@@ -24,7 +24,7 @@ router.get("/:userId1/:userId2", async (req, res) => {
         { senderId: userId1, receiverId: userId2 },
         { senderId: userId2, receiverId: userId1 },
       ],
-    }).sort({ createdAt: 1 }); // oldest first
+    }).sort({ createdAt: 1 }); 
     res.json(messages);
   } catch (err) {
     console.error(err);
@@ -32,4 +32,4 @@ router.get("/:userId1/:userId2", async (req, res) => {
   }
 });
 
-export default router; // fix typo here
+export default router;

@@ -2,10 +2,7 @@ const ChatInput = ({ message, setMessage, sendMessage }) => {
   return (
     <div className="p-2 border-t border-gray-300 bg-white flex items-center gap-3">
 
-      {/* Attachment Icon */}
-      <button className="p-2 bg-gray-200 rounded-lg">
-        📎
-      </button>
+      
 
       {/* Input */}
      <input

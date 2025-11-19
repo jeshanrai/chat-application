@@ -7,13 +7,13 @@ const Home = () => {
   style={{
     display: "flex",
     width: "100%",
-    height: "89vh", // <-- full viewport height
+    height: "89vh", 
   }}
 >
 
      
 
-      {/* Right Chat Room */}
+    
       <div style={{ flex: 1 }}>
         <ChatRoom />
       </div>

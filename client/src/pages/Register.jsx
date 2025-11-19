@@ -4,11 +4,12 @@ import { Link, useNavigate } from "react-router-dom";
 
 const Register = () => {
   const [username, setUsername] = useState("");
-  const [type, setType] = useState("");// to differentiate message type
+  const [type, setType] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const API_URL = process.env.REACT_APP_BACKEND_URL;
   const [message, setMessage] = useState("");
-  const navigate = useNavigate(); // For redirect after success
+  const navigate = useNavigate(); 
 
   const handleRegister = async () => {
     // Basic validation
@@ -19,7 +20,7 @@ const Register = () => {
     }
 
     try {
-      const response = await fetch("http://localhost:5000/api/auth/register", {
+      const response = await fetch(`${API_URL}/api/auth/register`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -37,10 +38,9 @@ const Register = () => {
         setEmail("");
         setPassword("");
 
-        // Redirect to login after 1.5 seconds
         setTimeout(() => navigate("/login"), 1500);
       } else {
-        // Backend returned an error
+       
         setMessage(data.message || "Registration failed!");
       }
     } catch (error) {
@@ -100,7 +100,7 @@ const Register = () => {
         </button>
 
 
-        {/* Already have account */}
+      
         <p className="text-center text-gray-500 text-sm mt-4">
           Already have an account?{" "}
           <Link

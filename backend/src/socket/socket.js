@@ -10,25 +10,26 @@ const socketHandler = (io) => {
       io.emit("getUsers", Array.from(activeUsers.keys()));
     });
 
-    // Handle messages
-    socket.on("sendMessage", ({ senderId, receiverId, text }) => {
+    // include receiverId + unique id in response
+    socket.on("sendMessage", ({ _id, senderId, receiverId, text, timestamp }) => {
       const receiverSocket = activeUsers.get(receiverId);
+
       if (receiverSocket) {
         io.to(receiverSocket).emit("getMessage", {
+          _id,
           senderId,
+          receiverId,
           text,
-          timestamp: new Date()
+          timestamp,
         });
       }
     });
 
-    // When a user logs out manually
     socket.on("logoutUser", (userId) => {
       activeUsers.delete(userId);
       io.emit("getUsers", Array.from(activeUsers.keys()));
     });
 
-    // When socket disconnects (auto offline)
     socket.on("disconnect", () => {
       for (let [userId, id] of activeUsers) {
         if (id === socket.id) {

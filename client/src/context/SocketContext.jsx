@@ -9,29 +9,24 @@ const SocketProvider = ({ children }) => {
   const { user } = useAuth();
   const [socket, setSocket] = useState(null);
   const [onlineUsers, setOnlineUsers] = useState([]);
+  const API_URL = process.env.REACT_APP_BACKEND_URL;
 
   useEffect(() => {
-    const newSocket = io("http://localhost:5000"); // replace with your server URL
+    const newSocket = io(API_URL);
     setSocket(newSocket);
 
-    return () => {
-      newSocket.disconnect();
-    };
+    return () => newSocket.disconnect();
   }, []);
 
-  // Handle user online/offline
   useEffect(() => {
     if (!socket || !user?._id) return;
 
-    // Notify server user is online
     socket.emit("addUser", user._id);
 
-    // Listen for online users list
-    socket.on("getUsers", (onlineUserIds) => {
-      setOnlineUsers(onlineUserIds);
+    socket.on("getUsers", (list) => {
+      setOnlineUsers(list);
     });
 
-    // On unmount or user change, notify logout
     return () => {
       socket.emit("logoutUser", user._id);
       socket.off("getUsers");

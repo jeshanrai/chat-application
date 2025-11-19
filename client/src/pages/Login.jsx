@@ -3,12 +3,13 @@ import { useAuth } from "../hooks/useAuth";
 import { Link, useNavigate } from "react-router-dom";
 
 const Login = () => {
-  const { login } = useAuth(); // your auth context
+  const { login } = useAuth(); 
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
+  const API_URL = process.env.REACT_APP_BACKEND_URL;
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
-  const [type, setType] = useState(""); // "success" or "error"
+  const [type, setType] = useState(""); 
 
   const handleLogin = async () => {
     // Basic validation
@@ -19,7 +20,7 @@ const Login = () => {
     }
 
     try {
-      const response = await fetch("http://localhost:5000/api/auth/login", {
+      const response = await fetch(`${API_URL}/api/auth/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
@@ -35,7 +36,7 @@ login(
     data.token
   );
 
-        // Redirect after 1 second
+      
         setTimeout(() => navigate("/home"), 1000);
       } else {
         setMessage(data.message || "Login failed!");
@@ -89,7 +90,6 @@ login(
           Login
         </button>
 
-        {/* Register link */}
         <p className="text-center text-gray-500 text-sm mt-4">
           Don’t have an account?{" "}
           <Link

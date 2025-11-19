@@ -1,5 +1,5 @@
 import User from "../models/User.js";
-import { activeUsers } from "../socket/socket.js";  // ⬅ import the active users map
+import { activeUsers } from "../socket/socket.js"; 
 
 export const getUsers = async (req, res) => {
   try {
@@ -7,7 +7,7 @@ export const getUsers = async (req, res) => {
 
     const usersWithOnlineStatus = users.map(user => ({
       ...user._doc,
-      online: activeUsers.has(user._id.toString())   // ⭐ online field added
+      online: activeUsers.has(user._id.toString())   
     }));
 
     res.json(usersWithOnlineStatus);

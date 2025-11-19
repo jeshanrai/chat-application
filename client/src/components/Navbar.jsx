@@ -6,14 +6,14 @@ const Navbar = () => {
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    logout(); // Call your auth hook's logout
-    navigate("/login"); // Redirect to login after logout
+    logout(); 
+    navigate("/login");
   };
 
   return (
     <nav className="w-full bg-[#f5f5f5] border-b border-gray-300">
       <div className="flex items-center justify-between py-3 px-10 max-w-full mx-auto">
-        {/* Logo */}
+        
         <Link
           to="/"
           className="text-xl font-semibold text-gray-800 hover:text-gray-600 transition"
